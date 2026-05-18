@@ -22,8 +22,6 @@
             align-items: center;
         }
 
-        /* ========== LIVING BACKGROUND WITH MOVEMENT ========== */
-        /* Animated gradient mesh */
         .animated-bg {
             position: fixed;
             top: 0;
@@ -42,7 +40,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Floating glowing orbs with slow float */
         .floating-orb {
             position: fixed;
             border-radius: 50%;
@@ -96,7 +93,6 @@
             100% { transform: translate(8%, 12%) scale(1.15); }
         }
 
-        /* Moving light streak lines */
         .light-streak {
             position: fixed;
             top: 0;
@@ -126,7 +122,6 @@
             100% { transform: translateX(100%); opacity: 0; }
         }
 
-        /* Subtle particle network (moving dots) */
         .particle-network {
             position: fixed;
             top: 0;
@@ -151,7 +146,6 @@
             100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
         }
 
-        /* Card - premium glass with slight hover */
         .card {
             position: relative;
             z-index: 100;
@@ -294,11 +288,23 @@
             margin-top: 2rem;
             color: #4c5080;
         }
+        
+        .demo-badge {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #ffd700;
+            z-index: 1000;
+            font-family: monospace;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- LIVING BACKGROUND WITH MOVEMENT -->
     <div class="animated-bg"></div>
     <div class="floating-orb orb-1"></div>
     <div class="floating-orb orb-2"></div>
@@ -311,6 +317,8 @@
         <div class="streak"></div>
     </div>
     <div class="particle-network" id="particles"></div>
+    
+    <div class="demo-badge" id="demoBadge">Loading...</div>
 
     <div class="card">
         <div id="step1" class="step active">
@@ -352,7 +360,7 @@
     </div>
 
     <script>
-        // Generate floating particles
+        // Particles
         const particleContainer = document.getElementById('particles');
         for (let i = 0; i < 60; i++) {
             const particle = document.createElement('div');
@@ -368,27 +376,43 @@
 
         async function sendOTP() {
             const phone = document.getElementById('phone').value.trim();
-            if (!phone) { showMsg('step1', '❌ Enter phone number', true); return; }
+            if (!phone) { 
+                showMsg('step1', '❌ Enter phone number', true); 
+                return; 
+            }
+            
             currentPhone = phone;
             showMsg('step1', '📡 Sending OTP...', false);
+            
             try {
                 const res = await fetch('/api/send-otp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phone: currentPhone })
                 });
+                
                 const data = await res.json();
+                
                 if (res.ok) {
-                    showMsg('step1', '✅ OTP sent!', false);
+                    if (data.demoMode) {
+                        showMsg('step1', '⚠️ DEMO MODE: Check server console for OTP', false);
+                    } else {
+                        showMsg('step1', '✅ OTP sent to your phone!', false);
+                    }
+                    
                     setTimeout(() => {
                         document.getElementById('step1').classList.remove('active');
                         document.getElementById('step2').classList.add('active');
                         document.getElementById('otp').value = '';
-                    }, 700);
+                        document.getElementById('otpMessage').innerHTML = '';
+                    }, 1500);
                 } else {
-                    showMsg('step1', data.error || '❌ Failed', true);
+                    showMsg('step1', data.error || '❌ Failed to send OTP', true);
                 }
-            } catch(e) { showMsg('step1', '⚠️ Network error', true); }
+            } catch(e) { 
+                console.error('Error:', e);
+                showMsg('step1', '⚠️ Network error - Is server running?', true); 
+            }
         }
 
         async function verifyOTP() {
@@ -397,15 +421,19 @@
                 document.getElementById('otpMessage').innerHTML = '⚠️ Enter 6 digits';
                 return;
             }
+            
             document.getElementById('otpMessage').innerHTML = '🔄 Verifying...';
+            
             try {
                 const res = await fetch('/api/verify-otp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ phone: currentPhone, otp })
                 });
+                
                 const data = await res.json();
-                if (res.ok) {
+                
+                if (res.ok && data.success) {
                     document.getElementById('otpMessage').innerHTML = '✅ Access granted';
                     setTimeout(() => {
                         document.getElementById('step2').classList.remove('active');
@@ -418,7 +446,10 @@
                 } else {
                     document.getElementById('otpMessage').innerHTML = `❌ ${data.error}`;
                 }
-            } catch(e) { document.getElementById('otpMessage').innerHTML = '⚠️ Server error'; }
+            } catch(e) { 
+                console.error('Error:', e);
+                document.getElementById('otpMessage').innerHTML = '⚠️ Server error'; 
+            }
         }
 
         function goBack() {
@@ -428,19 +459,46 @@
         }
 
         async function logout() {
-            try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
+            try { 
+                await fetch('/api/logout', { method: 'POST' }); 
+            } catch(e) {}
+            
             document.getElementById('step3').classList.remove('active');
             document.getElementById('step1').classList.add('active');
             document.getElementById('phone').value = '';
             document.getElementById('otp').value = '';
             currentPhone = '';
-            showMsg('step1', '🔒 Logged out', false);
+            showMsg('step1', '🔒 Logged out successfully', false);
         }
 
         function showMsg(step, text, isError) {
             const el = step === 'step1' ? document.getElementById('message') : document.getElementById('otpMessage');
-            if (el) { el.innerHTML = text; el.style.color = isError ? '#fca5a5' : '#a5f3c3'; }
+            if (el) { 
+                el.innerHTML = text; 
+                el.style.color = isError ? '#fca5a5' : '#a5f3c3'; 
+            }
         }
+        
+        // Check server status
+        async function checkServer() {
+            try {
+                const res = await fetch('/api/me');
+                const data = await res.json();
+                if (data && !data.error) {
+                    document.getElementById('demoBadge').innerHTML = '🟢 Server Connected';
+                    document.getElementById('demoBadge').style.color = '#4ade80';
+                } else {
+                    document.getElementById('demoBadge').innerHTML = '🟡 Server Ready';
+                    document.getElementById('demoBadge').style.color = '#fbbf24';
+                }
+            } catch(e) {
+                document.getElementById('demoBadge').innerHTML = '🔴 Server Disconnected';
+                document.getElementById('demoBadge').style.color = '#ef4444';
+            }
+        }
+        
+        checkServer();
+        setInterval(checkServer, 5000);
     </script>
 </body>
 </html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Xero Premium OTP | Living Background</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Poppins', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0a0a1a;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ========== LIVING BACKGROUND WITH MOVEMENT ========== */
+        /* Animated gradient mesh */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(125deg, #0f0c29, #302b63, #24243e);
+            background-size: 200% 200%;
+            animation: gradientFlow 12s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating glowing orbs with slow float */
+        .floating-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatSlow 20s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 60vw;
+            height: 60vw;
+            background: #6a11cb;
+            top: -30vh;
+            left: -20vw;
+            animation-duration: 25s;
+        }
+        .orb-2 {
+            width: 45vw;
+            height: 45vw;
+            background: #ff4d6d;
+            bottom: -20vh;
+            right: -15vw;
+            animation-duration: 22s;
+            animation-delay: -5s;
+        }
+        .orb-3 {
+            width: 35vw;
+            height: 35vw;
+            background: #00c9b7;
+            top: 40%;
+            left: 60%;
+            animation-duration: 28s;
+            animation-delay: -10s;
+            opacity: 0.35;
+        }
+        .orb-4 {
+            width: 40vw;
+            height: 40vw;
+            background: #f5a623;
+            bottom: 10%;
+            left: -10%;
+            animation-duration: 30s;
+            animation-delay: -3s;
+            opacity: 0.3;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(8%, 12%) scale(1.15); }
+        }
+
+        /* Moving light streak lines */
+        .light-streak {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .streak {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(106, 17, 203, 0.6), rgba(255, 77, 109, 0.6), transparent);
+            animation: streakMove 8s linear infinite;
+        }
+        .streak:nth-child(1) { top: 15%; animation-delay: 0s; }
+        .streak:nth-child(2) { top: 45%; animation-delay: -3s; width: 80%; left: 10%; }
+        .streak:nth-child(3) { top: 70%; animation-delay: -6s; width: 60%; left: 20%; }
+        .streak:nth-child(4) { top: 85%; animation-delay: -2s; width: 90%; left: 5%; }
+
+        @keyframes streakMove {
+            0% { transform: translateX(-100%); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Subtle particle network (moving dots) */
+        .particle-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            width: 2px;
+            height: 2px;
+            animation: particleDrift 15s infinite linear;
+        }
+        @keyframes particleDrift {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+
+        /* Card - premium glass with slight hover */
+        .card {
+            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 12, 28, 0.65);
+            border-radius: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 30px 50px -20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(106, 17, 203, 0.2) inset;
+            width: 90%;
+            max-width: 500px;
+            padding: 2.5rem 2rem;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            background: rgba(10, 12, 28, 0.8);
+            border-color: rgba(106, 17, 203, 0.5);
+            transform: translateY(-4px);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #c084fc, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .sub {
+            color: #9ca3cf;
+            font-size: 0.85rem;
+            margin-bottom: 2rem;
+            border-left: 3px solid #8b5cf6;
+            padding-left: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.6rem;
+        }
+        label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #a78bfa;
+            margin-bottom: 0.6rem;
+        }
+        input {
+            width: 100%;
+            background: rgba(5, 7, 18, 0.7);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 1rem 1.3rem;
+            font-size: 1rem;
+            color: #f0f0ff;
+            transition: all 0.2s;
+            outline: none;
+        }
+        input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+            background: rgba(5, 7, 18, 0.9);
+        }
+
+        button {
+            width: 100%;
+            background: linear-gradient(105deg, #6d28d9, #4c1d95);
+            border: none;
+            border-radius: 2rem;
+            padding: 1rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+        }
+        button:hover {
+            background: linear-gradient(105deg, #7c3aed, #5b21b6);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -8px #5b21b6;
+        }
+        .secondary-btn {
+            background: transparent;
+            border: 1.5px solid rgba(139, 92, 246, 0.5);
+            box-shadow: none;
+        }
+        .secondary-btn:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .logout-btn {
+            background: rgba(220, 38, 38, 0.2);
+            border: 1px solid rgba(220, 38, 38, 0.5);
+        }
+        .logout-btn:hover {
+            background: rgba(220, 38, 38, 0.4);
+        }
+
+        .message {
+            margin-top: 1.2rem;
+            padding: 0.75rem;
+            border-radius: 1.2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-badge {
+            background: linear-gradient(135deg, rgba(109, 40, 217, 0.2), rgba(76, 29, 149, 0.1));
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .badge-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+        }
+        .badge-label { color: #9ca3cf; font-weight: 500; }
+        .badge-value { color: #e0e7ff; font-weight: 600; text-align: right; }
+        footer {
+            text-align: center;
+            font-size: 0.65rem;
+            margin-top: 2rem;
+            color: #4c5080;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- LIVING BACKGROUND WITH MOVEMENT -->
+    <div class="animated-bg"></div>
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+    <div class="floating-orb orb-3"></div>
+    <div class="floating-orb orb-4"></div>
+    <div class="light-streak">
+        <div class="streak"></div>
+        <div class="streak"></div>
+        <div class="streak"></div>
+        <div class="streak"></div>
+    </div>
+    <div class="particle-network" id="particles"></div>
+
+    <div class="card">
+        <div id="step1" class="step active">
+            <h2>Xero Access</h2>
+            <div class="sub">Passwordless • OTP secured</div>
+            <div class="input-group">
+                <label>📞 PHONE NUMBER</label>
+                <input type="tel" id="phone" placeholder="+91 98765 43210">
+            </div>
+            <button onclick="sendOTP()">✨ Send Secure OTP ✨</button>
+            <div id="message" class="message"></div>
+            <footer>Living background • Premium experience</footer>
+        </div>
+
+        <div id="step2" class="step">
+            <h2>Verify Identity</h2>
+            <div class="sub">Enter the 6-digit code</div>
+            <div class="input-group">
+                <label>🔑 ONE-TIME PASSWORD</label>
+                <input type="text" id="otp" placeholder="000000" maxlength="6">
+            </div>
+            <button onclick="verifyOTP()">🔓 Verify & Unlock 🔓</button>
+            <button onclick="goBack()" class="secondary-btn" style="margin-top:0.8rem;">← Back</button>
+            <div id="otpMessage" class="message"></div>
+        </div>
+
+        <div id="step3" class="step">
+            <h2>Dashboard</h2>
+            <div class="sub">Authenticated session</div>
+            <div class="user-badge">
+                <div class="badge-row"><span class="badge-label">📱 Phone</span><span class="badge-value" id="displayPhone">-</span></div>
+                <div class="badge-row"><span class="badge-label">🆔 User ID</span><span class="badge-value" id="displayUserId">-</span></div>
+                <div class="badge-row"><span class="badge-label">📅 Joined</span><span class="badge-value" id="displayJoined">-</span></div>
+                <div class="badge-row"><span class="badge-label">✨ Status</span><span class="badge-value" id="accountStatus">-</span></div>
+            </div>
+            <button onclick="logout()" class="logout-btn">🚪 Terminate Session</button>
+            <footer>Premium tier • Secure</footer>
+        </div>
+    </div>
+
+    <script>
+        // Generate floating particles
+        const particleContainer = document.getElementById('particles');
+        for (let i = 0; i < 60; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = 10 + Math.random() * 15 + 's';
+            particleContainer.appendChild(particle);
+        }
+
+        let currentPhone = '';
+
+        async function sendOTP() {
+            const phone = document.getElementById('phone').value.trim();
+            if (!phone) { showMsg('step1', '❌ Enter phone number', true); return; }
+            currentPhone = phone;
+            showMsg('step1', '📡 Sending OTP...', false);
+            try {
+                const res = await fetch('/api/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: currentPhone })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    showMsg('step1', '✅ OTP sent!', false);
+                    setTimeout(() => {
+                        document.getElementById('step1').classList.remove('active');
+                        document.getElementById('step2').classList.add('active');
+                        document.getElementById('otp').value = '';
+                    }, 700);
+                } else {
+                    showMsg('step1', data.error || '❌ Failed', true);
+                }
+            } catch(e) { showMsg('step1', '⚠️ Network error', true); }
+        }
+
+        async function verifyOTP() {
+            const otp = document.getElementById('otp').value.trim();
+            if (!otp || otp.length !== 6) {
+                document.getElementById('otpMessage').innerHTML = '⚠️ Enter 6 digits';
+                return;
+            }
+            document.getElementById('otpMessage').innerHTML = '🔄 Verifying...';
+            try {
+                const res = await fetch('/api/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: currentPhone, otp })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('otpMessage').innerHTML = '✅ Access granted';
+                    setTimeout(() => {
+                        document.getElementById('step2').classList.remove('active');
+                        document.getElementById('step3').classList.add('active');
+                        document.getElementById('displayPhone').innerText = data.user.phone;
+                        document.getElementById('displayUserId').innerText = `#${data.user.id}`;
+                        document.getElementById('displayJoined').innerText = new Date(data.user.created_at).toLocaleString();
+                        document.getElementById('accountStatus').innerHTML = data.isNew ? '🎉 New Account' : '🔁 Returning User';
+                    }, 400);
+                } else {
+                    document.getElementById('otpMessage').innerHTML = `❌ ${data.error}`;
+                }
+            } catch(e) { document.getElementById('otpMessage').innerHTML = '⚠️ Server error'; }
+        }
+
+        function goBack() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('otpMessage').innerHTML = '';
+        }
+
+        async function logout() {
+            try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+            document.getElementById('phone').value = '';
+            document.getElementById('otp').value = '';
+            currentPhone = '';
+            showMsg('step1', '🔒 Logged out', false);
+        }
+
+        function showMsg(step, text, isError) {
+            const el = step === 'step1' ? document.getElementById('message') : document.getElementById('otpMessage');
+            if (el) { el.innerHTML = text; el.style.color = isError ? '#fca5a5' : '#a5f3c3'; }
+        }
+    </script>
+</body>
+</html>
